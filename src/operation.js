@@ -44,3 +44,28 @@ function getForecast(city, callback) {
 }
 
 
+suite.only('operations');
+
+function fetchCurrentCity() {
+    const operation = {};
+    getCurrentCity(function (error, result) {
+        if (error) {
+            operation.onError(error);
+            return;
+        }
+        operation.onSuccess(result);
+    });
+    operation.setCallbacks = function setCallbacks(onSuccess, onError) {
+        operation.onSuccess = onSuccess;
+        operation.onError = onError;
+    };
+    return operation;
+}
+
+test("fetchCurrentCity pass the callbacks later on", function (done) {
+    const operation = fetchCurrentCity();
+    operation.setCallbacks(
+        result => done(),
+        error => done(error)
+    );
+});
